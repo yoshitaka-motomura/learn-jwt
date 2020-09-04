@@ -6,6 +6,7 @@ import moment from 'moment'
 import { authenticate } from './auth'
 import { v4 as uuidv4 } from 'uuid'
 import { sign, verify } from 'jsonwebtoken'
+import * as path from 'path'
 
 const app: express.Application = express()
 
@@ -15,6 +16,9 @@ app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+app.get('/', (req, res) => {
+  res.sendFile(`${path.join(__dirname)}/static/index.html`)
+})
 app.get('/public', (_, res) => {
   const present = moment().format('YYYY-MM-DD HH:mm:ssZ')
   res.json({
@@ -55,6 +59,7 @@ function jwtAuthenticateMiddleware(
 app.post('/token', (req, res) => {
   const { email, password } = req.body
   const user = authenticate(email, password)
+  console.log(user)
   if (!user.login) {
     res.status(401).json({
       message: 'Unauthenticated',
@@ -76,6 +81,6 @@ app.get('/private', jwtAuthenticateMiddleware, (req, res) => {
   res.json({ message: 'hello', token: user })
 })
 
-app.listen(3000, function () {
-  console.log('http://localhost:3000')
+app.listen(8080, function () {
+  console.log('http://localhost:8080')
 })
