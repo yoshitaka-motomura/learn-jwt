@@ -1,0 +1,57 @@
+FORMAT: 1A
+HOST: http://localhost:8080
+
+# Learn JWT
+JWT(json web tokens)の学習用APIです。理解の助けになればとおもいます。
+
+## 公開用のエンドポイント [GET /public]
+このエンドポイントは公開用のため、そのままアクセスできます
++ Response 200 (application/json)
+    + Attribute
+      + scope: public (string)
+      + message: `公開エンドポイントです。閲覧に制限はありません。` (string)
+      + date: `YYYY-MM-DD HH:mm:ssZ` (string)
+
+## トークンの取得 [POST /token]
+トークンを取得用のエンドポイントですサンプル用に2つのアカウントがあるので、好きな方を利用してください。
+返却されたJSONの`token`の文字列がJWTアクセストークンです
+
+| email | password |
+| :---- | :------- |
+| test@example.com | password |
+| hello@example.com | password |
+
+**curl**
+```
+curl -d "email=test@example.com&password=password" -H "Content-Type: application/x-www-form-urlencoded" -X POST http://localhost:8080/token | jq
+```
+
++ Request (application/x-www-form-urlencoded)
+    + Attribute
+      + email: test@example.com (string)
+      + password: password (string)
+
++ Response 200 (application/json)
+    + Attribute
+       + token: `eyJhbGciOiJIUzI1...` (string)
+
+## プライベートアクセス [GET /private]
+アクセストークンをアクセスします。必ずトークンを取得してからリクエストしてください。
+
++ Request
+     + Headers
+
+            Authorization: eyJhbGciOiJIUzI1...
+
++ Response 200 (application/json)
+    + Attribute
+      + message: hello (string)
+      + token
+          + email: test@example.com (string)
+          + iat: 1234566 (number)
+          + exp: 1235678 (number)
+          + aud: http://localhost/ (string)
+          + iss: http://localhost (string)
+          + sub: 1 (string)
+          + jti: `8b5d0eba-d8ac-43b1-a5aa-4f7bca271af7` (string)
+
