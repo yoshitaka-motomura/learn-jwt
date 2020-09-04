@@ -5,6 +5,10 @@ export type UserInterface = {
   password?: string
   login: boolean
 }
+
+/**
+ * テスト用のユーザー
+ */
 export const Users: UserInterface[] = [
   {
     id: 1,
@@ -30,6 +34,5 @@ export function authenticate(email: string, password: string): UserInterface {
       login: false,
     }
   }
-  delete user.password
   return user
 }
