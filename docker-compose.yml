@@ -1,0 +1,8 @@
+version: "3"
+services:
+  app:
+    container_name: express-jwt-app
+    build: .
+    image: learn-node-jwt
+    ports:
+      - 8080:8080
